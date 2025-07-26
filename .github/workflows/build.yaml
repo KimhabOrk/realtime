@@ -1,0 +1,30 @@
+name: Next.js Build
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: |
+          npm install
+          SUPABASE_ENV=production npx supabase@latest link --project-ref moonrlzhnkmwesbiwbzk
+          SUPABASE_ENV=production npx supabase@latest config push
+          SUPABASE_ENV=production npx supabase@latest db push
+
+      - name: Build Next.js Application
+        run: npm run build # Or yarn build if using Yarn
